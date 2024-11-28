@@ -1,0 +1,45 @@
+.file-item-container {
+  width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px; /* Rounded corners for the div */
+  padding: 10px;
+  position: relative; /* Needed for absolute positioning of pseudo-element */
+  transition: background-color 0.3s ease;
+}
+
+.file-item-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 2%;
+  width: 95%;
+  height: 1px;
+  background-color: #7d7d7d;
+  margin: auto;
+}
+
+.file-item-container:hover {
+  background-color: rgba(176, 176, 176, 0.3);
+}
+
+.icon-name-container {
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.file-item-container button {
+  color: white;
+  font-size: 18px;
+  background-color: transparent;
+  border-width: 0px;
+  color: #7d7d7d;
+  transition: color 0.3s ease;
+}
+
+.file-item-container button:hover {
+  color: white;
+}
