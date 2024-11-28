@@ -1,0 +1,12 @@
+.Main-body {
+  background-color: #282c34;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.Main-body::-webkit-scrollbar {
+  display: none;
+}
