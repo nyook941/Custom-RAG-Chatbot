@@ -1,4 +1,11 @@
 python-dotenv
+python-multipart
+fastapi
+uvicorn
+openai
 langchain
+langchain-community
 langchain-openai
-llama-index
+unstructured
+chromadb
+sentence-transformers
