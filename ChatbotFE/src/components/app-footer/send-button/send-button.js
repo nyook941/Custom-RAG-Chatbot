@@ -16,19 +16,18 @@ import sendRequestToFastAPI from "../test-button/send-request-to-fastAPI";
 
 export default function SendButton({ ws, text, setText }) {
   const dispatch = useDispatch();
-  const { audioBlobUrl, transcribeWebsocket, isRecording, isRecordingSendPending } = useSelector(
-    (state) => state.chat
-  );
-
-  const s3 = new S3({
-    accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
-    secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
-  });
+  const {
+    audioBlobUrl,
+    transcribeWebsocket,
+    isRecording,
+    isRecordingSendPending,
+  } = useSelector((state) => state.chat);
 
   const sendAudio = useCallback(async () => {
-    dispatch(setIsRecordingSendPending(false))
+    dispatch(setIsRecordingSendPending(false));
     dispatch(setIsTranscribeLoading(true));
     const fileName = `recording-${Date.now()}.mp3`;
+
     try {
       if (!audioBlobUrl) {
         console.error("Blob URL is empty.");
@@ -40,19 +39,15 @@ export default function SendButton({ ws, text, setText }) {
       });
 
       if (response.status === 200) {
-        const audioBlob = Buffer.from(response.data);
+        const audioBlob = Buffer.from(response.data).toString("base64");
 
-        const params = {
-          Bucket: "pre-transcribed-mp3-bucket",
-          Key: fileName,
-          Body: audioBlob,
-        };
-
-        s3.upload(params, (err, data) => {
-          if (err) {
-            console.error("Error uploading to S3:", err);
+        const apiResponse = await axios.post(
+          "https://k5jhm1siei.execute-api.us-east-2.amazonaws.com/default/audio",
+          {
+            audioBlob,
+            fileName,
           }
-        });
+        );
       } else {
         console.error("Failed to download audio.");
       }
@@ -68,7 +63,7 @@ export default function SendButton({ ws, text, setText }) {
         ws.json(payload);
       }
     }
-  }, [audioBlobUrl, dispatch, s3]);
+  }, [audioBlobUrl, dispatch, ws]);
 
   const sendToFastAPI = (input) => {
     dispatch(addMessage({ messageType: "request", memo: input }));
@@ -108,7 +103,9 @@ export default function SendButton({ ws, text, setText }) {
   return (
     <button
       className={audioBlobUrl !== "" ? "Send-Audio" : "Button"}
-      onClick={audioBlobUrl !== "" ? sendAudio : () => sendToFastAPI(text.trim())}
+      onClick={
+        audioBlobUrl !== "" ? sendAudio : () => sendToFastAPI(text.trim())
+      }
       disabled={disableButton}
     >
       <i
